@@ -295,7 +295,9 @@ elif page == 'Dashboard':
          st.plotly_chart(fig7,use_container_width=True)
 
     with col2:
-        plot3_df = df.groupby('Marketing Channels')['Conversion Rate'].mean().sort_values(ascending=False).reset_index()
+        plot3_df = (df.groupby('Marketing Channels').agg(Conversions=('Conversions', 'sum'),Clicks=('Clicks', 'sum')).reset_index())
+        plot3_df['Conversion Rate'] = plot3_df['Conversions'] / plot3_df['Clicks'] * 100
+        plot3_df = (plot3_df.sort_values('Conversion Rate', ascending=False).reset_index(drop=True))
         fig8 = px.bar(data_frame= plot3_df, x='Marketing Channels', y= 'Conversion Rate',text_auto= True,title = 'Conversion Rate by Marketing',height= 520).update_xaxes(categoryorder = 'max descending').update_traces(texttemplate='%{y:.2f}%',textposition='outside')
         st.plotly_chart(fig8,use_container_width=True)
 
